@@ -8,17 +8,31 @@ import (
 
 //使用Aes算法对明文进行加密
 //三元素 key data mode
-func AesEnCrypt(origin []byte ,key []byte)([]byte,error)  {
+//func AesEnCrypt(origin []byte ,key []byte)([]byte,error)  {
+//	block,err:=aes.NewCipher(key)
+//	if err!=nil {
+//		return nil,err
+//	}
+//	//对明文数据进行尾部填充
+//   cryptData:=utils.PKCS5EndPadding(origin,block.BlockSize())
+//   //实例化加密mode
+//   blockMode :=cipher.NewCBCEncrypter(block,key)
+//   //加密
+//   cipherData :=make([]byte,len(cryptData))
+//   blockMode.CryptBlocks(cipherData,cryptData)
+//   return cipherData,nil
+//}
+func AesEnCrypt(origin []byte,key []byte)([]byte,error)  {
 	block,err:=aes.NewCipher(key)
 	if err!=nil {
 		return nil,err
 	}
-	//对明文数据进行尾部填充
-    cryptData:=utils.PKCS5EndPadding(origin,block.BlockSize())
-    //实例化加密mode
-    blockMode :=cipher.NewCBCEncrypter(block,key)
-    //加密
-    cipherData :=make([]byte,len(cryptData))
-    blockMode.CryptBlocks(cipherData,cryptData)
-    return cipherData,nil
+	//将明文进行尾部填充
+	cryData:=utils.PKCS5EndPadding(origin,block.BlockSize())
+	//实例化一个模型
+	mode:=cipher.NewCBCEncrypter(block,key)
+	//加密
+	cipherData:=make([]byte,len(cryData))
+	mode.CryptBlocks(cipherData,cryData)
+	return cipherData,nil
 }

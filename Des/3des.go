@@ -1,4 +1,4 @@
-package _des
+package Des
 
 import (
 	"DesCode/utils"
@@ -9,7 +9,7 @@ import (
 //该函数用于实现3des算法的加密
 func TripleDesEncrypt(origintext,key[]byte)([]byte,error) {
 	//实例化一个cipher
-	block,err:=des.NewCipher(key)
+	block,err:=des.NewTripleDESCipher(key)
 	if err!=nil {
 		return nil,err
 	}
@@ -17,7 +17,7 @@ func TripleDesEncrypt(origintext,key[]byte)([]byte,error) {
 	//cryptData :=PKCS5EndPadding(origintext,block.BlockSize())
 	cryptData :=utils.ZerosEndPadding(origintext,block.BlockSize())
 	//实例化加密模式
-	mode:=cipher.NewCBCEncrypter(block,key)
+	mode:=cipher.NewCBCEncrypter(block,key[:8])
 	//对填充后的明文进行分组加密
 	cipherText := make([]byte,len(cryptData))
 	mode.CryptBlocks(cipherText,cryptData)
@@ -33,6 +33,7 @@ func TripleDesDecrypt(cipherText []byte,key []byte) ([]byte,error) {
 	//不需要对密文进行尾部填充,可以直接实例化mode
 	blockMode:=cipher.NewCBCDecrypter(block,key)
 	originText :=make([]byte,len(cipherText))
+
 	blockMode.CryptBlocks(originText,cipherText)
 	return originText,nil
 }
