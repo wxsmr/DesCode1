@@ -28,11 +28,23 @@ func AesEnCrypt(origin []byte,key []byte)([]byte,error)  {
 		return nil,err
 	}
 	//将明文进行尾部填充
-	cryData:=utils.PKCS5EndPadding(origin,block.BlockSize())
+	cryData:=utils.PKCS5EndPadding([]byte(origin),block.BlockSize())
 	//实例化一个模型
-	mode:=cipher.NewCBCEncrypter(block,key)
+	mode:=cipher.NewCBCEncrypter(block,key[:block.BlockSize()])
 	//加密
 	cipherData:=make([]byte,len(cryData))
 	mode.CryptBlocks(cipherData,cryData)
 	return cipherData,nil
+}
+
+func AesDeCrypt(cipherData []byte,key []byte)([]byte,error)  {
+	block,err:=aes.NewCipher(key)
+	if err!=nil {
+		return nil,err
+	}
+	mode:=cipher.NewCBCDecrypter(block,key[:block.BlockSize()])
+	decipherData:=make([]byte,len(cipherData))
+	mode.CryptBlocks(decipherData,cipherData)
+	decipherData1:=utils.ClearPKCS5EndPadding(decipherData,block.BlockSize())
+	return decipherData1,nil
 }

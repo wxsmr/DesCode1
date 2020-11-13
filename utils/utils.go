@@ -22,9 +22,6 @@ func ClearPKCS5EndPadding(text []byte,size int)[]byte{
 	 //paddingSize:=size-len(text)%size
 	 //textSize:=len(text)-paddingSize
 	 //获取最后一个元素
-	if len(text)%size == 1 {
-		return text
-	}
 	 lastEle:=int(text[len(text)-1])
 	 return text[0:len(text)-lastEle]
 }
